@@ -102,7 +102,8 @@ Sample training/test scripts are provided under './scripts/' and can be directly
 
 
 ### Test Data
-We provide one test data which includes the input to MDPET and output of the MDPET.
+We provide one test data which includes the input to MDPET and output of the MDPET. \
+
 Please see the following link to request the test data. 
 [[Drive Link](https://bioimagesuiteweb.github.io/bisweb-manual/CommandLineTools.html)]
 
