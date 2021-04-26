@@ -35,19 +35,19 @@ Our code has been tested with Python 3.7, Pytorch 1.4.0, CUDA 10.0 on Ubuntu 18.
 
 
 ### Dataset Setup
-    ./data_preprocess/              # data setup 
+    ./preprocess/              # data setup 
     │
-    ├── train                       # training data -- each .h5 contains 6 x high-dose gated data and 6 x low-dose gated data
+    ├── train                  # training data -- each .h5 contains 6 x high-dose gated data and 6 x low-dose gated data
     │   ├── case_1.h5     
     │   ├── case_2.h5       
     │   ├── case_3.h5 
     │   ├── ...    
     │   └── case_N.h5
     │
-    ├── test                        # test data -- each .h5 contains 6 x high-dose gated data and 6 x low-dose gated data
-    │   ├── case_1.h5     
-    │   ├── case_2.h5       
-    │   ├── case_3.h5 
+    ├── test                   # test data -- each .h5 contains 6 x high-dose gated data and 6 x low-dose gated data
+    │   ├── case_N+1.h5     
+    │   ├── case_N+2.h5       
+    │   ├── case_N+3.h5 
     │   ├── ...    
     │   └── case_M.h5         
     └── 
