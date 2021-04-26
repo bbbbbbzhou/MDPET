@@ -1,6 +1,6 @@
 # MDPET: A Unified Motion Correction and Denoising Adversarial Network for Low-dose Gated PET
 
-Bo Zhou, Yu-Jung Tsai, Xiongchao Chen, Chi Liu, James S. Duncan
+Bo Zhou, Yu-Jung Tsai, Xiongchao Chen, James S. Duncan and Chi Liu
 
 IEEE Transactions on Medical Imaging (TMI), 2021
 
@@ -35,137 +35,76 @@ Our code has been tested with Python 3.7, Pytorch 1.4.0, CUDA 10.0 on Ubuntu 18.
 
 
 ### Dataset Setup
-    .
-    preprocess/MRI_SEG/PROC/       # data setup for MRI segmentation (target domain) from CT (source domain)
-    ├── train_MRI.txt
+    ./data_preprocess/              # data setup 
     │
-    ├── train_DCT.txt
+    ├── train                       # training data -- each .h5 contains 6 x high-dose gated data and 6 x low-dose gated data
+    │   ├── case_1.h5     
+    │   ├── case_2.h5       
+    │   ├── case_3.h5 
+    │   ├── ...    
+    │   └── case_N.h5
     │
-    ├── test_MRI.txt
-    │
-    ├── DCT                        # contain CT training data (index by train_DCT.txt)
-    │   ├── IMG_CT_1.png     
-    │   ├── IMG_CT_1_mask.png   
-    │   ├── IMG_CT_2.png     
-    │   ├── IMG_CT_2_mask.png 
-    │   ├── ...
-    │   ├── IMG_CT_N.png     
-    │   └── IMG_CT_N_mask.png 
-    │
-    ├── MRI                        # contain both MRI training and testing data (index by train_MRI.txt and test_MRI.txt)
-    │   ├── IMG_MRI_1.png     
-    │   ├── IMG_MRI_1_mask.png   
-    │   ├── IMG_MRI_2.png     
-    │   ├── IMG_MRI_2_mask.png 
-    │   ├── ...
-    │   ├── IMG_MRI_M.png     
-    │   └── IMG_MRI_M_mask.png          
+    ├── test                        # test data -- each .h5 contains 6 x high-dose gated data and 6 x low-dose gated data
+    │   ├── case_1.h5     
+    │   ├── case_2.h5       
+    │   ├── case_3.h5 
+    │   ├── ...    
+    │   └── case_M.h5         
     └── 
-
-train_MRI.txt contains the .png file names with content of
-
-    IMG_MRI_1.png 
-    IMG_MRI_2.png
-    IMG_MRI_3.png 
-    ...
-    IMG_MRI_K.png    
-
-train_DCT.txt contains the .png file names with content of
-
-    IMG_CT_1.png 
-    IMG_CT_2.png
-    IMG_CT_3.png 
-    ...
-    IMG_CT_N.png  
-
-train_CT.txt contains the .png file names with content of
-
-    IMG_MRI_K+1.png 
-    IMG_MRI_K+2.png
-    IMG_MRI_K+3.png 
-    ...
-    IMG_MRI_M.png  
-
-IMG_CT_N.png is a 2D image and IMG_CT_N_mask.png is its segmentation.
-
-For training, please specify the training data directory in the code options using: \
-`--raw_A_dir` provides the domain A image data folder directory. In MRI segmentation example, it should be ./preprocess/MRI_SEG/PROC/DCT/ . \
-`--raw_A_seg_dir` provides the domain A image's segmentation data folder directory. It should be identical to above, which is ./preprocess/MRI_SEG/PROC/DCT/ . \
-`--sub_list_A` provides the directory of .txt file containing domain A's image file names. In MRI segmentation example, it should be ./preprocess/MRI_SEG/PROC/train_DCT.txt . \
-`--raw_B_dir` provides the domain B image data folder directory. In MRI segmentation example, it should be ./preprocess/MRI_SEG/PROC/MRI/ . \
-`--raw_B_seg_dir` provides the domain B image's segmentation data folder directory. It should be identical to above, which is ./preprocess/MRI_SEG/PROC/MRI/ . \
-`--sub_list_B` provides the directory of .txt file containing domain B's image file names. In MRI segmentation example, it should be ./preprocess/MRI_SEG/PROC/train_MRI.txt . 
-
-For testing, please specify the test data directory in the code options using: \
-`--test_B_dir` provides the domain B test image data folder directory. In MRI segmentation example, it should be ./preprocess/MRI_SEG/PROC/MRI/ . \
-`--test_img_list_file` provides the directory of .txt file containing domain B's test image file names. In MRI segmentation example, it should be ./preprocess/MRI_SEG/PROC/test_MRI.txt . \
-`--test_seg_ouput_dir` provides the prediction output directory. 
+Each .h5 file should contain 6 gated image at high-dose level and 6 gated image at low-dose level. 
+The variable name in the .h5 should be 'G1LD' / 'G2LD' / 'G3LD' / 'G4LD' / 'G5LD' / 'G6LD' for low-dose gated images, and 'G1HD' / 'G2HD' / 'G3HD' / 'G4HD' / 'G5HD' / 'G6HD' for high-dose gated images.
 
 
 ### To Run Our Code
 - Train the model
 ```bash
-python main.py \
---name experiment_apada2seg \
---raw_A_dir ./preprocess/MRI_SEG/PROC/DCT/ \
---raw_A_seg_dir ./preprocess/MRI_SEG/PROC/DCT/ \
---raw_B_dir ./preprocess/MRI_SEG/PROC/MRI/ \
---sub_list_A ./preprocess/MRI_SEG/PROC/train_DCT.txt \
---sub_list_B ./preprocess/MRI_SEG/PROC/train_MRI.txt \
---batchSize 2 \
---angle 15 \
---model apada2seg_model_train \
---which_model_netS duseunet \
---pool_size 50 \
---no_dropout \
---apada2seg_run_model Train \
---dataset_mode apada2seg_train \
---input_nc 1  \
---output_nc 1 \
---output_nc_seg 2 \
---seg_norm DiceNorm \
---lambda_cc 0.1 \
---lambda_mind 0.1 \
---checkpoints_dir ./Checkpoints/MRI/ \
---display_id 0
+python train.py \
+--experiment_name 'experiment_train_svrhddn_dp_gan_mse' \
+--model_type 'model_svrhd_dp_gan' \
+--data_root './preprocess/' \
+--net_G1 'svr_dp' \
+--net_G2 'unet' \
+--net_D 'patchGAN' \
+--weight_dn_recon 100 \
+--weight_reg 1000 \
+--image_loss 'mse' \
+--batch_size 1 \
+--zoomsize_train 106 106 106 \
+--cropsize_train 96 96 96 \
+--rotate_train 30 \
+--AUG \
+--eval_epochs 20 \
+--save_epochs 20 \
+--snapshot_epochs 20 \
+--lr 1e-4
 ```
 where \
-`--lambda_cc` defines the weights parameter for CC loss. \
-`--lambda_mind`  defines the weights parameter for MIND loss. \
+`--experiment_name` provides the experiment name for the current run, and save all the corresponding results under the experiment_name's folder. \
+`--data_root` provides the data folder directory (with structure and files illustrated above). \
+`--net_G1` specifies the motion estimation network type. \
+`--net_G2` specifies the denoising network type. \
+`--net_D` specifies the discriminator network type. \
+`--AUG` enables the data augumentation during the training. \
 Other hyperparameters can be adjusted in the code as well.
 
 - Test the model
 ```bash
-python main.py \
---name experiment_apada2seg \
---raw_A_dir ./preprocess/MRI_SEG/PROC/DCT/ \
---raw_A_seg_dir ./preprocess/MRI_SEG/PROC/DCT/ \
---raw_B_dir ./preprocess/MRI_SEG/PROC/MRI/ \
---sub_list_A ./preprocess/MRI_SEG/PROC/train_DCT.txt \
---sub_list_B ./preprocess/MRI_SEG/PROC/train_MRI.txt \
---batchSize 1 \
---model apada2seg_model_test \
---which_model_netS duseunet \
---pool_size 50 \
---no_dropout \
---apada2seg_run_model TestSeg \
---dataset_mode apada2seg_test \
---input_nc 1  \
---seg_norm DiceNorm \
---output_nc 1 \
---output_nc_seg 2 \
---test_B_dir ./preprocess/MRI_SEG/PROC/MRI/ \
---test_img_list_file ./preprocess/MRI_SEG/PROC/test_MRI.txt \
---test_seg_output_dir ./Output/MRI/experiment_apada2seg \
---checkpoints_dir ./Checkpoints/MRI/ \
---which_epoch_S 10
+python test.py \
+--resume './outputs/experiment_train_svrhddn_dp_gan_mse/checkpoints/model_xxx.pt' \
+--experiment_name 'experiment_test_svrhddn_dp_gan_mse' \
+--model_type 'model_svrhd_dp_gan' \
+--data_root './preprocess/' \
+--net_G1 'svr_dp' \
+--net_G2 'unet' \
+--net_D 'patchGAN'
 ```
 Sample training/test scripts are provided under './scripts/' and can be directly executed.
 
 
-### Registration based on APA2Seg-Net
-Please refer to the Yale BioImage Suite (Command Line Version) for implementation of our registeration pipeline.
-[[BIS Link](https://bioimagesuiteweb.github.io/bisweb-manual/CommandLineTools.html)]
+### Test Data
+We provide one test data which includes the input to MDPET and output of the MDPET.
+Please see the following link to request the test data. 
+[[Drive Link](https://bioimagesuiteweb.github.io/bisweb-manual/CommandLineTools.html)]
 
 
 ### Contact 

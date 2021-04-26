@@ -1,7 +1,7 @@
 CUDA_VISIBLE_DEVICES=1 python train.py \
---experiment_name 'experiment_train_svrhddn_dp_gan_mse_fold1' \
+--experiment_name 'experiment_train_svrhddn_dp_gan_mse' \
 --model_type 'model_svrhd_dp_gan' \
---data_root '../Data/preprocess/Processed1_5Percent_nofilter_fold1/' \
+--data_root './preprocess/' \
 --net_G1 'svr_dp' \
 --net_G2 'unet' \
 --net_D 'patchGAN' \
