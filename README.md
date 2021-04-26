@@ -51,7 +51,7 @@ Our code has been tested with Python 3.7, Pytorch 1.4.0, CUDA 10.0 on Ubuntu 18.
     │   ├── ...    
     │   └── case_M.h5         
     └── 
-Each .h5 file should contain 6 gated image at high-dose level and 6 gated image at low-dose level. 
+Each .h5 file should contain 6 gated image at high-dose level and 6 gated image at low-dose level.  
 The variable name in the .h5 should be 'G1LD' / 'G2LD' / 'G3LD' / 'G4LD' / 'G5LD' / 'G6LD' for low-dose gated images, and 'G1HD' / 'G2HD' / 'G3HD' / 'G4HD' / 'G5HD' / 'G6HD' for high-dose gated images.
 
 
@@ -102,9 +102,8 @@ Sample training/test scripts are provided under './scripts/' and can be directly
 
 
 ### Test Data
-We provide one test data which includes the input to MDPET and output of the MDPET. \
-
-Please see the following link to request the test data. 
+We provide one test data which includes the input to MDPET and output of the MDPET.  
+Please see the following link to request the test data.  
 [[Drive Link](https://bioimagesuiteweb.github.io/bisweb-manual/CommandLineTools.html)]
 
 
